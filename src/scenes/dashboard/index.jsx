@@ -206,14 +206,94 @@
 // };
 
 // export default Dashboard;
-import React from 'react'
+import GridCard from "components/GridCard";
+import ListCard from "components/ListCard";
+import React from "react";
+import { useState, useEffect } from "react";
 
 const Dashboard = () => {
+  const [listViewOn, setListViewOn] = useState(true);
+  const [fuelStations, setFuelStations] = useState([]);
+  const [activeFuelStations, setActiveFuelStations] = useState([]);
+
+  const changeView = () => {
+    if (listViewOn) {
+      setListViewOn(false);
+    } else {
+      setListViewOn(true);
+    }
+  };
+
+  useEffect(() => {
+    // Define the URL for your Express server
+    const apiUrl = "http://localhost:5000/fuel-stations"; // Update with your server URL
+
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => setFuelStations(data))
+      .catch((error) =>
+        console.error("Error fetching fuel stations: " + error)
+      );
+    console.log(fuelStations);
+  }, []);
+
+  useEffect(() => {
+    // Define the URL for your Express server
+    const apiUrl = "http://localhost:5000/active-fuel-stations"; // Update with your server URL
+
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => setActiveFuelStations(data))
+      .catch((error) =>
+        console.error("Error fetching fuel stations: " + error)
+      );
+    console.log(activeFuelStations);
+  }, []);
+
+  useEffect(() => {}, [listViewOn]);
+
   return (
     <div>
-      
+      <div className="flex-between">
+        {/* <div className="d-flex flex-row m-4">
+          {" "}
+          <button
+            type="button"
+            className="btn btn-primary mb-4"
+            onClick={changeView}
+          >
+            Change View
+          </button>
+          <button type="button" className="btn btn-primary mb-4">
+            Active
+          </button>
+        </div> */}
+
+        {/* {fuelStations.map((single) => {
+          const {
+            fs_id,
+            status,
+            last_seen,
+            last_updated_timestamp,
+            temperature,
+            humidity,
+          } = single;
+          return (
+            <ListCard
+              fs_id={fs_id}
+              status={status}
+              last_seen={last_seen}
+              last_updated_timestamp={last_updated_timestamp}
+              temperature={temperature}
+              humidity={humidity}
+            />
+          );
+        })} */}
+
+        <ListCard />
+      </div>
     </div>
-  )
-}
+  );
+};
 
 export default Dashboard;
